@@ -37,8 +37,8 @@ if (empty($_SESSION)) {
         </div>
     </div>
     <div class="container">
-        <a href="cad_anuncio.php" class="btn btn-primary">Novo Anúncio</a>
-        <a href="index_logado.php?meus_anuncios=1" class="btn btn-success">Meus Anúncios</a>
+        <a href="novo_anuncio.php" class="btn btn-primary">Novo Anúncio</a>
+        <a href="meus_anuncios.php" class="btn btn-success">Meus Anúncios</a>
         <a href="index_logado.php?meus_anuncios=0" class="btn btn-info">Todos Anúncios</a>
         <a href="logout.php" class="btn btn-dark">Sair</a>
     </div>
