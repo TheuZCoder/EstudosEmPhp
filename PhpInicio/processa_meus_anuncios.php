@@ -1,50 +1,45 @@
 <?php
-require_once 'conectaBD.php';
-
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php?msgErro=Você não está logado.");
-    exit();
-}
-
-$usuario_email = $_SESSION['email'];
-
-try {
-    $sql = "SELECT * FROM anuncios WHERE usuario_email = :usuario_email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':usuario_email', $usuario_email);
-    $stmt->execute();
-    $anuncios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($stmt->rowCount() > 0) {
-        echo '<table class="table">';
-        echo '<thead>';
-        echo '<tr>';
-        echo '<th>Título</th>';
-        echo '<th>Descrição</th>';
-        echo '<th>Preço</th>';
-        echo '<th>Ações</th>';
-        echo '</tr>';
-        echo '</thead>';
-        echo '<tbody>';
-
-        foreach ($anuncios as $anuncio) {
-            echo '<tr>';
-            echo '<td>' . $anuncio['titulo'] . '</td>';
-            echo '<td>' . $anuncio['descricao'] . '</td>';
-            echo '<td>R$ ' . number_format($anuncio['preco'], 2, ',', '.') . '</td>';
-            echo '<td>';
-            // Adicione links para editar ou excluir, se necessário
-            // echo '<a href="editar_anuncio.php?id=' . $anuncio['ID'] . '">Editar</a> | ';
-            // echo '<a href="excluir_anuncio.php?id=' . $anuncio['ID'] . '">Excluir</a>';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '</tbody>';
-        echo '</table>';
-    } else {
-        echo '<p>Você ainda não possui anúncios cadastrados.</p>';
+// Função para excluir anúncio
+function excluirAnuncio($pdo, $anuncioID)
+{
+    try {
+        $sql = "DELETE FROM anuncios WHERE id = :anuncioID";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':anuncioID', $anuncioID);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        echo '<p>Erro ao excluir o anúncio.</p>';
     }
-} catch (PDOException $e) {
-    echo '<p>Erro ao recuperar anúncios.</p>';
 }
+
+// Função para editar anúncio
+function editarAnuncio($pdo, $anuncioID, $novoTitulo, $novaDescricao, $novoPreco)
+{
+    try {
+        $sql = "UPDATE anuncios SET titulo = :titulo, descricao = :descricao, preco = :preco WHERE id = :anuncioID";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':titulo', $novoTitulo);
+        $stmt->bindParam(':descricao', $novaDescricao);
+        $stmt->bindParam(':preco', $novoPreco);
+        $stmt->bindParam(':anuncioID', $anuncioID);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        echo '<p>Erro ao editar o anúncio.</p>';
+    }
+}
+
+// Verificar se o botão de exclusão foi acionado
+if (isset($_POST['excluirAnuncio']) && isset($_POST['anuncioID'])) {
+    $anuncioID = $_POST['anuncioID'];
+    excluirAnuncio($pdo, $anuncioID);
+}
+
+// Verificar se o botão de edição foi acionado
+if (isset($_POST['editarAnuncio']) && isset($_POST['anuncioID']) && isset($_POST['novoTitulo']) && isset($_POST['novaDescricao']) && isset($_POST['novoPreco'])) {
+    $anuncioID = $_POST['anuncioID'];
+    $novoTitulo = $_POST['novoTitulo'];
+    $novaDescricao = $_POST['novaDescricao'];
+    $novoPreco = $_POST['novoPreco'];
+    editarAnuncio($pdo, $anuncioID, $novoTitulo, $novaDescricao, $novoPreco);
+}
+?>

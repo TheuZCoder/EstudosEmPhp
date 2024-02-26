@@ -26,6 +26,7 @@
             </div>
             <br>
             <button type="submit" name="enviarAnuncio" class="btn btn-primary">Cadastrar Anúncio</button>
+            <a href="#" onclick="history.back();" class="btn btn-secondary">Voltar</a>
             <a href="meus_anuncios.php" class="btn btn-secondary">Ver Meus Anúncios</a>
         </form>
     </div>
